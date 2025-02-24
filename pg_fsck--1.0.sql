@@ -5,7 +5,7 @@
 
 --
 -- pg_fsck_get_my_database_id()
---.
+--
 CREATE FUNCTION pg_fsck_get_my_database_id()
 RETURNS OID
 AS 'MODULE_PATHNAME', 'pg_fsck_get_my_database_id'
