@@ -1,0 +1,5 @@
+# pg_fsck extension
+comment = 'checking the integrity of database files, detecting missing or corrupted relfilenode files to ensure storage consistency'
+default_version = '1.0'
+module_pathname = '$libdir/pg_fsck'
+relocatable = true
