@@ -61,3 +61,6 @@ postgres=# SELECT * from pg_fsck_find_missing_relfilenodes();
 
 ## License
 This software is provided under the BSD license. See LICENSE for details.
+
+## Report Issue
+Report issue on https://github.com/xnervwang/SeafileClientBuildTools, or send email to Xnerv Wang <xnervwang@gmail.com>.
