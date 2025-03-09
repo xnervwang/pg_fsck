@@ -36,14 +36,18 @@ DATA = pg_fsck--1.0.sql
 MODULES = pg_fsck
 PGFILEDESC = "pg_fsck - checking the integrity of database files, detecting missing or corrupted relfilenode files to ensure storage consistency"
 
-#TESTS        = $(wildcard test/sql/*.sql)
-#REGRESS      = $(patsubst test/sql/%.sql,%,$(TESTS))
-#REGRESS_OPTS = --inputdir=test
+# Use the provided PG_CONFIG if set; otherwise, fallback to system pg_config
+PG_CONFIG ?= pg_config
 
-CFLAGS=`pg_config --includedir-server`
+# Ensure PG_CONFIG is executable
+ifeq ($(shell test -x $(PG_CONFIG) && echo yes),)
+  $(error "PG_CONFIG is not found or not executable: $(PG_CONFIG)")
+endif
 
-PG_CONFIG = pg_config
+# Retrieve PGXS path using the correct PG_CONFIG
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
 
-pg_fsck.so: $(OBJS)
+# Ensure CFLAGS includes PostgreSQL server header files
+CFLAGS += -I$(shell $(PG_CONFIG) --includedir-server)
+

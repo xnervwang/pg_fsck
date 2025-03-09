@@ -36,6 +36,8 @@
  *-------------------------------------------------------------------------
  */
 #include "postgres.h"
+#include "common/relpath.h"
+#include "utils/builtins.h"
 
 #include "fmgr.h"
 #include "miscadmin.h"
@@ -47,8 +49,25 @@ PG_MODULE_MAGIC;
  */
 PG_FUNCTION_INFO_V1(pg_fsck_get_my_database_id);
 
+/*
+ * Returns the the current database directory path. If it's
+ * non-default tablespace, the symbolic path "pg_tblspc/..."
+ * will be returned rather than the actual physical path.
+ */
+PG_FUNCTION_INFO_V1(pg_fsck_get_database_path);
+
 Datum
 pg_fsck_get_my_database_id(PG_FUNCTION_ARGS)
 {
     PG_RETURN_OID(MyDatabaseId);
 }
+
+Datum
+pg_fsck_get_database_path(PG_FUNCTION_ARGS)
+{
+    Oid dbOid = PG_GETARG_OID(0);
+    Oid spcOid = PG_GETARG_OID(1);
+
+    PG_RETURN_TEXT_P(cstring_to_text(GetDatabasePath(dbOid, spcOid)));
+}
+

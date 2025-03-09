@@ -11,9 +11,12 @@ $ make install
 ## Functions
 * `pg_fsck_list_relfilenodes` - list all relfilenode files in current database, include the tables in the non-default table spaces.
 * `pg_fsck_find_missing_relfilenodes` - list all relfilenode files, which exist in `pg_class` catalog but are missing in current database.
+* `pg_fsck_find_extra_relfilenodes` - list all relfilenode files, which don't exist in `pg_class` catalog but exist in the database folder.
 * `pg_fsck_get_my_database_id` - get the database ID of current connection.
 
-For example,
+By default, `pg_fsck_find_missing_relfilenodes` and `pg_fsck_find_extra_relfilenodes` are restricted to superusers, but other users can be granted the EXECUTE permission to run these functions.
+
+For example of `pg_fsck_find_missing_relfilenodes`,
 ```SQL
 postgres=# CREATE EXTENSION pg_fsck;
 CREATE EXTENSION
@@ -57,6 +60,27 @@ postgres=# SELECT * from pg_fsck_find_missing_relfilenodes();
  test_table_in_ts |  32771 |       32771 | pg_tblspc/32769/PG_18_202502212/5/32771
  large_table      |  32782 |       32782 | base/5/32782.3
 (2 rows)
+```
+
+For example of `pg_fsck_find_extra_relfilenodes`,
+```SQL
+postgres=# CREATE EXTENSION pg_fsck;
+CREATE EXTENSION
+
+-- The first scan, no extra file.
+postgres=# select * from pg_fsck_find_extra_relfilenodes();
+ relname | reloid | relfilenode | spcname | filepath
+---------+--------+-------------+---------+----------
+(0 rows)
+
+-- After creating extra files in the default tblspace, global tblspace and a new tblspace.
+postgres=# select * from pg_fsck_find_extra_relfilenodes();
+                filepath
+----------------------------------------
+ pg_tblspc/16389/PG_18_202503071/5/5555
+ base/5/100001
+ global/1111_fsm
+(3 rows)
 ```
 
 ## License
