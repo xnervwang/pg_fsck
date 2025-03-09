@@ -2,16 +2,22 @@
 An extension that provides checking of the integrity of database files, detecting missing or corrupted relfilenode files to ensure storage consistency.
 
 ## Installation
-Build and install the extension.
-```
+Build and install the extension to the current PostgreSQL installation directory.
+```bash
 $ make
 $ make install
+```
+
+If you prefer to install it in a different location, such as a local PostgreSQL installation directory, try:
+```bash
+PG_CONFIG=<postgres_install_dir>/bin/pg_config make
+PG_CONFIG=<postgres_install_dir>/bin/pg_config make install
 ```
 
 ## Functions
 * `pg_fsck_list_relfilenodes` - list all relfilenode files in current database, include the tables in the non-default table spaces.
 * `pg_fsck_find_missing_relfilenodes` - list all relfilenode files, which exist in `pg_class` catalog but are missing in current database.
-* `pg_fsck_find_extra_relfilenodes` - list all relfilenode files, which don't exist in `pg_class` catalog but exist in the database folder.
+* `pg_fsck_find_extra_relfilenodes` - list all relfilenode files, which don't exist in `pg_class` catalog but exist in the database directory.
 * `pg_fsck_get_my_database_id` - get the database ID of current connection.
 
 By default, `pg_fsck_find_missing_relfilenodes` and `pg_fsck_find_extra_relfilenodes` are restricted to superusers, but other users can be granted the EXECUTE permission to run these functions.
